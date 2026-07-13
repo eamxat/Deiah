@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Deiah Xatspace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@1,400&display=swap');
+
+        :root {
+            /* --- PALETA ACTUALIZADA --- */
+            --magenta-main: #FFB7C5; 
+            --gold-brown: #AA7522;
+            --gold-shine: #E6C885; 
+            --bg-deep: #050203; 
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            min-height: 100vh;
+            cursor: none;
+            overflow-x: hidden;
+            background-color: #000; 
+            overscroll-behavior-y: none;
+        }
+
+        /* --- FONDO ANIMADO "DEEP VOID" --- */
+        #animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -5;
+            background: linear-gradient(135deg, #000000, #0f0508, #050200, #000000);
+            background-size: 400% 400%;
+            animation: midnightMove 15s ease infinite;
+        }
+
+        @keyframes midnightMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- EFECTO DE ESTRELLAS --- */
+        #stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -4;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: var(--max-opacity); transform: scale(1); box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        /* --- PARTÍCULAS DEL CURSOR --- */
+        .cursor-particle {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 9998;
+            animation: particleFade 1s forwards;
+        }
+
+        @keyframes particleFade {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* --- NUEVO: EFECTO LIKE (MANITAS ARRIBA) --- */
+        .like-float {
+            position: fixed;
+            pointer-events: none;
+            color: var(--gold-shine);
+            font-size: 24px;
+            z-index: 10000;
+            animation: floatLike 1s ease-out forwards;
+            text-shadow: 0 0 10px var(--gold-brown);
+        }
+
+        @keyframes floatLike {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; transform: translateY(-20px) scale(1.2) rotate(-10deg); }
+            100% { transform: translateY(-100px) scale(1) rotate(10deg); opacity: 0; }
+        }
+
+        /* Capa de Luces Ambientales */
+        #ambient-glows {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -3;
+            background-image: 
+                radial-gradient(circle at 15% 25%, rgba(255, 183, 197, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 75%, rgba(170, 117, 34, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Cursor de Lujo */
+        #cursor-glow {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(170, 117, 34, 0.8);
+            border: 1px solid var(--gold-shine);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.3s;
+            box-shadow: 0 0 15px rgba(255, 183, 197, 0.3);
+            mix-blend-mode: exclusion;
+            display: none; 
+        }
+        
+        @media (hover: hover) {
+            #cursor-glow { display: block; }
+        }
+        
+        a:hover ~ #cursor-glow, button:hover ~ #cursor-glow, .cursor-hover:hover ~ #cursor-glow {
+            width: 45px; height: 45px;
+            background: rgba(255, 183, 197, 0.6);
+            border-color: transparent;
+        }
+
+        /* Tarjetas de Cristal */
+        .glass-card {
+            background: rgba(10, 5, 8, 0.75); 
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(170, 117, 34, 0.3);
+            border-top: 1px solid rgba(230, 200, 133, 0.15);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Título Metálico */
+        .title-glow {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(110deg, var(--gold-brown) 10%, var(--magenta-main) 30%, var(--gold-shine) 50%, var(--magenta-main) 70%, var(--gold-brown) 90%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 8s linear infinite;
+            filter: drop-shadow(0 0 15px rgba(170, 117, 34, 0.3));
+        }
+
+        @keyframes shineText { to { background-position: 200% center; } }
+
+        /* Botón Gradiente */
+        .btn-luxury {
+            background: linear-gradient(135deg, var(--gold-brown) 0%, var(--magenta-main) 100%);
+            position: relative; overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .btn-luxury::before {
+            content: ''; position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-luxury:hover::before { left: 100%; }
+        .btn-luxury:hover { box-shadow: 0 0 25px rgba(255, 183, 197, 0.5); transform: translateY(-2px); }
+
+        /* Inputs y Sliders */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px;
+            border-radius: 50%; background: var(--gold-brown);
+            border: 2px solid #000; cursor: pointer;
+            box-shadow: 0 0 0 1px var(--gold-brown);
+            margin-top: -5px; transition: background 0.2s;
+        }
+        
+        input[type=range]:hover::-webkit-slider-thumb {
+            background: var(--magenta-main);
+            box-shadow: 0 0 0 1px var(--magenta-main);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
+
+        /* Visualizador */
+        .equalizer-bar {
+            background: var(--gold-brown); width: 3px; border-radius: 2px;
+            animation: equalize 1s infinite ease-in-out;
+        }
+        .equalizer-bar:nth-child(even) { background: var(--magenta-main); animation-delay: 0.2s; }
+        
+        @keyframes equalize {
+            0%, 100% { height: 4px; opacity: 0.5; }
+            50% { height: 24px; opacity: 1; box-shadow: 0 0 10px var(--gold-brown); }
+        }
+
+        /* Pantalla de Inicio */
+        #start-screen { background: radial-gradient(circle at center, #0f0508 0%, #000000 100%); }
+
+        /* Scrollbar general y Modal */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--gold-brown); border-radius: 10px; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--gold-brown); border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen p-3 md:p-6 selection:bg-[#AA7522] selection:text-white">
+
+    <!-- ESPACIO RESERVADO PARA FUTURO BANNER SUPERIOR (65px) -->
+    <div class="w-full shrink-0 h-[65px] pointer-events-none"></div>
+
+    <!-- ELEMENTOS DE FONDO -->
+    <div id="animated-bg"></div>
+    <div id="stars-container"></div>
+    <div id="ambient-glows"></div>
+    <div id="cursor-glow"></div>
+
+    <!-- PANTALLA DE INICIO / OVERLAY -->
+    <div id="start-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center transition-opacity duration-1000 ease-in-out px-4 text-center">
+        <div class="absolute inset-0 pointer-events-none opacity-40">
+             <div class="absolute top-1/3 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-[var(--magenta-main)] rounded-full blur-[100px] animate-pulse"></div>
+             <div class="absolute bottom-1/3 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-[var(--gold-brown)] rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+
+        <button onclick="enterSite()" class="relative z-10 group flex flex-col items-center gap-6 md:gap-8 cursor-hover outline-none tap-highlight-transparent">
+            <div class="relative w-32 h-32 md:w-40 md:h-40">
+                <div class="absolute inset-0 rounded-full border border-t-[var(--magenta-main)] border-r-[var(--gold-brown)] border-b-[var(--magenta-main)] border-l-[var(--gold-brown)] animate-[spin_6s_linear_infinite] opacity-80"></div>
+                <div class="absolute inset-3 rounded-full border border-white/10"></div>
+                
+                <div class="absolute inset-4 rounded-full overflow-hidden flex items-center justify-center bg-black">
+                    <!-- FOTO INICIO -->
+                    <img src="https://xatimg.com/image/vNnWmSx0iSv7.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 scale-110 group-hover:scale-100" onerror="this.src='https://placehold.co/400x400/000000/FFF?text=Subir+inicio.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition-all">
+                        <i class="fa-solid fa-play text-3xl md:text-4xl text-[var(--gold-shine)] drop-shadow-[0_0_10px_var(--gold-brown)] transform group-hover:scale-110 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <span class="text-lg md:text-xl font-serif italic text-[var(--gold-shine)] tracking-[0.2em] uppercase border-b border-transparent group-hover:border-[var(--magenta-main)] pb-2 transition-all duration-500">
+                Entrar
+            </span>
+        </button>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="main-content" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 opacity-0 scale-95 transition-all duration-1000 ease-out filter blur-sm my-auto pb-6">
+
+        <!-- Columna Izquierda -->
+        <section class="md:col-span-5 flex flex-col gap-4 md:gap-6">
+            
+            <!-- Tarjeta Perfil (z-50 sin overflow-hidden para permitir Tooltip encima) -->
+            <div class="glass-card rounded-3xl p-5 md:p-6 relative group cursor-hover z-50">
+                <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-[var(--gold-brown)] via-[var(--magenta-main)] to-[var(--gold-brown)]"></div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <h1 class="text-4xl md:text-5xl font-bold py-2 title-glow select-none">
+                        𝕯ᵉᶤ͟ᵃ͟ʰ *
+                    </h1>
+                    <p class="text-[var(--gold-brown)] text-[10px] md:text-xs tracking-[0.3em] uppercase mt-2 font-semibold border-b border-white/5 pb-3 inline-block">Yours (1514557558)</p>
+                </div>
+
+                <div class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 border border-[var(--gold-brown)]/20 shadow-2xl">
+                    <!-- FOTO PERFIL -->
+                    <img src="https://xatimg.com/image/vNnWmSx0iSv7.png" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" onerror="this.src='https://placehold.co/600x800/222/FFF?text=Subir+perfil.jpg'">
+                    
+                    <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded-full border border-[var(--magenta-main)]/30 flex items-center gap-1.5">
+                        <span id="status-indicator" class="w-1.5 h-1.5 bg-[var(--magenta-main)] rounded-full animate-pulse"></span>
+                        <span id="status-text" class="text-[9px] font-bold text-[var(--gold-shine)] uppercase tracking-wider">En Línea</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-1 text-center pt-2">
+                    <div class="group/stat">
+                        <span class="block text-lg md:text-xl font-bold text-white group-hover/stat:text-[var(--gold-brown)] transition-colors">208</span>
+                        <span class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-wider">Posts</span>
+                    </div>
+                    <div class="group/stat">
+                        <span class="block text-lg md:text-xl font-bold text-white group-hover/stat:text-[var(--magenta-main)] transition-colors">12.5k</span>
+                        <span class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-wider">Subs</span>
+                    </div>
+                    <div class="group/stat">
+                        <span class="block text-lg md:text-xl font-bold text-white group-hover/stat:text-[var(--gold-brown)] transition-colors">138</span>
+                        <span class="text-[9px] md:text-[10px] text-gray-500 uppercase tracking-wider">Follows</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 md:gap-3 mt-6">
+                    <!-- BOTÓN LIKE -->
+                    <button onclick="triggerLike(event, this)" class="cursor-hover flex-1 btn-luxury text-white py-2.5 md:py-3 rounded-xl text-xs font-bold tracking-widest uppercase shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                        Like <i class="fa-solid fa-thumbs-up"></i>
+                    </button>
+
+                    <!-- ICONO 1: Groups (Trade) - ORIGINAL CON ZOOM -->
+                    <a href="https://xat.com/trade" target="_blank" rel="noopener noreferrer" class="cursor-hover shrink-0 w-10 h-10 md:w-12 md:h-12 glass-card rounded-xl flex items-center justify-center hover:bg-white/5 hover:scale-110 transition-all duration-300 border border-[var(--gold-brown)]/20">
+                        <img src="https://xat.com/content/web/R00246/img/navbar/groups.svg" alt="Groups" class="w-5 h-5 md:w-6 md:h-6 pointer-events-none">
+                    </a>
+                    
+                    <!-- ICONO 2: Home (Eterno) - ORIGINAL CON ZOOM -->
+                    <a href="https://xat.com/Eterno" target="_blank" rel="noopener noreferrer" class="cursor-hover shrink-0 w-10 h-10 md:w-12 md:h-12 glass-card rounded-xl flex items-center justify-center hover:bg-white/5 hover:scale-110 transition-all duration-300 border border-[var(--gold-brown)]/20">
+                        <img src="https://xat.com/content/web/R00246/img/navbar/home.svg" alt="Home" class="w-5 h-5 md:w-6 md:h-6 pointer-events-none">
+                    </a>
+
+                    <!-- ICONO 3: Heart con Tooltip - ORIGINAL CON ZOOM -->
+                    <div class="relative group/tooltip shrink-0">
+                        <div class="cursor-hover w-10 h-10 md:w-12 md:h-12 glass-card rounded-xl flex items-center justify-center hover:bg-white/5 hover:scale-110 transition-all duration-300 border border-[var(--gold-brown)]/20">
+                            <img src="https://xat.com/content/web/R00246/img/xatspace/heart.svg" alt="Heart" class="w-5 h-5 md:w-6 md:h-6 pointer-events-none">
+                        </div>
+                        
+                        <!-- Panel de Tooltip Glassmorphism SIEMPRE FRENTE A TODO -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[280px] md:w-[320px] p-3 md:p-4 glass-card rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-300 z-[99999] text-center pointer-events-none transform group-hover/tooltip:-translate-y-1">
+                            <h4 class="text-[var(--gold-shine)] font-bold text-[11px] md:text-xs mb-1.5 border-b border-[var(--gold-brown)]/20 pb-1.5">Married: Warren (15488738197)</h4>
+                            <p class="text-white/90 font-serif italic text-[10px] md:text-[11px] leading-relaxed">
+                                Eres la forma más hermosa en la que la vida me enseñó que amar siempre vale la pena. Gracias por convertir cada día en un lugar al que siempre quiero volver. ♡
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÓN FRIENDS -->
+                <button onclick="openFriendsModal()" class="cursor-hover w-full mt-3 btn-luxury text-white py-2.5 md:py-3 rounded-xl text-xs font-bold tracking-widest uppercase shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    Friends <i class="fa-solid fa-user-group"></i>
+                </button>
+            </div>
+
+            <!-- Mini Bio con Bandera -->
+            <div class="glass-card rounded-3xl p-4 md:p-5 flex items-center gap-3 md:gap-4 cursor-hover border-l-2 border-l-[var(--gold-brown)]">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-[var(--gold-shine)] p-0.5 shrink-0">
+                    <!-- FOTO BIO -->
+                    <img src="https://xatimg.com/image/vNnWmSx0iSv7.png" class="w-full h-full object-cover rounded-full" onerror="this.src='https://placehold.co/200x200/222/FFF?text=bio.jpg'">
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="text-xs md:text-sm font-bold text-white">@Yours</h3>
+                        <img src="https://xat.com/images/smw/flag/fr.png" alt="FR" class="h-3 md:h-3.5 rounded-sm">
+                    </div>
+                    <p class="text-[10px] md:text-xs text-gray-400 mt-0.5"> (1514557558) <span class="text-[var(--magenta-main)]"></span><span class="text-[var(--gold-brown)]"></span>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Columna Derecha -->
+        <section class="md:col-span-7 flex flex-col gap-4 md:gap-6">
+
+            <!-- REPRODUCTOR -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-40 h-40 md:w-64 md:h-64 bg-[var(--gold-brown)]/5 rounded-full blur-[80px] pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 md:w-64 md:h-64 bg-[var(--magenta-main)]/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+                <div class="flex items-start justify-between mb-6 md:mb-8 relative z-10">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-compact-disc text-[var(--magenta-main)] animate-[spin_4s_linear_infinite]"></i>
+                            <h2 class="text-[10px] md:text-xs font-bold text-[var(--gold-shine)] uppercase tracking-[0.2em]">Now Playing</h2>
+                        </div>
+                        <p class="text-xl md:text-2xl font-serif italic text-white/90">My Playlist</p>
+                    </div>
+                    <div class="flex items-end gap-1 h-6 md:h-8 paused" id="visualizer">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-6 md:gap-8 items-center relative z-10 text-center sm:text-left">
+                    <div class="w-28 h-28 md:w-36 md:h-36 rounded-full p-1 border border-[var(--gold-brown)]/30 relative flex-shrink-0">
+                         <div class="w-full h-full rounded-full overflow-hidden relative">
+                             <img id="album-art" src="" class="w-full h-full object-cover animate-[spin_12s_linear_infinite]" style="animation-play-state: paused;" onerror="this.src='https://placehold.co/300x300/222/FFF?text=Music'">
+                             <div class="absolute inset-0 bg-black/10"></div>
+                             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#1a0b10] rounded-full border border-[var(--gold-brown)]"></div>
+                         </div>
+                    </div>
+
+                    <div class="flex-1 w-full min-w-0">
+                        <div class="mb-4 md:mb-6">
+                            <h3 id="song-title" class="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[var(--gold-shine)] to-[var(--gold-brown)] truncate leading-tight pb-1">Song Title</h3>
+                            <p id="artist-name" class="text-xs md:text-sm text-[var(--magenta-main)] font-medium mt-1">Artist Name</p>
+                        </div>
+
+                        <div class="w-full bg-white/5 rounded-full h-1 mb-2 cursor-pointer group cursor-hover tap-area" id="progress-container">
+                            <div id="progress-bar" class="bg-gradient-to-r from-[var(--gold-brown)] to-[var(--magenta-main)] h-1 rounded-full w-0 relative group-hover:h-1.5 transition-all duration-300 shadow-[0_0_10px_var(--magenta-main)]">
+                                <div class="absolute right-0 top-1/2 transform -translate-y-1/2 w-2.5 h-2.5 bg-[var(--gold-shine)] rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-[9px] md:text-[10px] text-gray-500 mb-4 md:mb-6 font-mono tracking-wider">
+                            <span id="current-time">0:00</span>
+                            <span id="duration">0:00</span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center gap-6">
+                                <button onclick="prevSong()" class="cursor-hover p-2 text-gray-500 hover:text-[var(--gold-shine)] transition-colors"><i class="fa-solid fa-backward-step text-lg"></i></button>
+                                
+                                <button onclick="togglePlay()" class="cursor-hover w-12 h-12 md:w-14 md:h-14 rounded-full btn-luxury flex items-center justify-center text-white shadow-xl hover:scale-105 active:scale-95 transition-transform border border-white/20">
+                                    <i id="play-icon" class="fa-solid fa-play ml-1 text-base md:text-lg"></i>
+                                </button>
+                                
+                                <button onclick="nextSong()" class="cursor-hover p-2 text-gray-500 hover:text-[var(--gold-shine)] transition-colors"><i class="fa-solid fa-forward-step text-lg"></i></button>
+                            </div>
+
+                            <div class="flex items-center gap-3 group cursor-hover w-full sm:w-auto justify-center">
+                                <i class="fa-solid fa-volume-low text-xs text-gray-500 group-hover:text-[var(--gold-brown)] transition-colors"></i>
+                                <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.7" class="w-24">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <audio id="audio-player" ontimeupdate="updateProgress()" onended="nextSong()"></audio>
+            </div>
+
+            <!-- Galería MODIFICADA (Carrusel Horizontal Único) -->
+            <div class="relative w-full group/slider">
+                <div id="gallery-slider" class="glass-card rounded-2xl p-2 group cursor-hover h-64 md:h-80 relative flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth">
+                    
+                    <!-- FOTO GALERIA 1 -->
+                    <div class="w-full h-full flex-shrink-0 snap-center relative overflow-hidden rounded-xl">
+                        <img src="https://xatimg.com/image/e6IFZ76DMH8M.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" onerror="this.src='https://placehold.co/800x400/222/FFF?text=Subir+galeria.jpg'">
+                        
+                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                             <i class="fa-solid fa-heart text-[var(--magenta-main)] text-4xl animate-bounce drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"></i>
+                        </div>
+                    </div>
+
+                    <!-- FOTO GALERIA 2 -->
+                    <div class="w-full h-full flex-shrink-0 snap-center relative overflow-hidden rounded-xl">
+                        <img src="https://xatimg.com/image/Kg8dj0YKZM9Y.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100" onerror="this.src='https://placehold.co/800x400/222/FFF?text=Subir+galeria.jpg'">
+                        
+                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                             <i class="fa-solid fa-heart text-[var(--magenta-main)] text-4xl animate-bounce drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]"></i>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <!-- Controles de navegación del carrusel -->
+                <button onclick="document.getElementById('gallery-slider').scrollBy({left: -document.getElementById('gallery-slider').offsetWidth, behavior: 'smooth'})" class="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/50 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[var(--magenta-main)] hover:text-black border border-white/20"><i class="fa-solid fa-chevron-left"></i></button>
+                <button onclick="document.getElementById('gallery-slider').scrollBy({left: document.getElementById('gallery-slider').offsetWidth, behavior: 'smooth'})" class="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/50 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity hover:bg-[var(--magenta-main)] hover:text-black border border-white/20"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <!-- CITA MODIFICADA -->
+            <div class="glass-card rounded-2xl p-6 md:p-8 text-center border-t border-[var(--gold-brown)]/20">
+                <p class="font-serif italic text-gray-400 text-base md:text-lg leading-relaxed">
+             "Si tuviera una sola flor por cada vez que pienso en ti, podría caminar para siempre en mi jardín."
+                </p>
+                <div class="mt-4 md:mt-6 flex justify-center gap-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[var(--gold-brown)] opacity-50"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-[var(--magenta-main)]"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-[var(--gold-brown)] opacity-50"></span>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- MODAL FRIENDS (Reutilizando diseño Glassmorphism) -->
+    <div id="friends-modal" class="fixed inset-0 z-[999999] flex items-center justify-center opacity-0 invisible transition-all duration-300 p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeFriendsModal()"></div>
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 relative transform scale-95 transition-transform duration-300">
+            <button onclick="closeFriendsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h2 class="text-center font-serif italic text-2xl text-[var(--gold-shine)] mb-6">♡ Friends ♡</h2>
+            
+            <div class="flex flex-col gap-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- JF -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--gold-brown)]/50 transition-colors group cursor-hover">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--magenta-main)]/20 flex items-center justify-center border border-[var(--magenta-main)]/30 text-[var(--magenta-main)] font-bold shadow-[0_0_10px_rgba(255,183,197,0.2)]">JF</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Jefa</h4>
+                            <p class="text-[10px] text-gray-400 font-mono">1231322223</p>
+                        </div>
+                    </div>
+                    <a href="https://xat.me/Jefa" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[var(--gold-brown)]/20 text-[var(--gold-shine)] text-[10px] font-bold border border-[var(--gold-brown)]/30 hover:bg-[var(--gold-brown)] hover:text-white transition-colors cursor-hover">XAT.ME</a>
+                </div>
+                <!-- SFR -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--gold-brown)]/50 transition-colors group cursor-hover">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--magenta-main)]/20 flex items-center justify-center border border-[var(--magenta-main)]/30 text-[var(--magenta-main)] font-bold shadow-[0_0_10px_rgba(255,183,197,0.2)]">SFR</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Stiffer</h4>
+                            <p class="text-[10px] text-gray-400 font-mono">344107857</p>
+                        </div>
+                    </div>
+                    <a href="https://xat.me/Stiffer" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[var(--gold-brown)]/20 text-[var(--gold-shine)] text-[10px] font-bold border border-[var(--gold-brown)]/30 hover:bg-[var(--gold-brown)] hover:text-white transition-colors cursor-hover">XAT.ME</a>
+                </div>
+                <!-- LND -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--gold-brown)]/50 transition-colors group cursor-hover">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--magenta-main)]/20 flex items-center justify-center border border-[var(--magenta-main)]/30 text-[var(--magenta-main)] font-bold shadow-[0_0_10px_rgba(255,183,197,0.2)]">LND</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Leonidas</h4>
+                            <p class="text-[10px] text-gray-400 font-mono">1538488247</p>
+                        </div>
+                    </div>
+                    <a href="https://xat.me/Leonidas" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[var(--gold-brown)]/20 text-[var(--gold-shine)] text-[10px] font-bold border border-[var(--gold-brown)]/30 hover:bg-[var(--gold-brown)] hover:text-white transition-colors cursor-hover">XAT.ME</a>
+                </div>
+                <!-- OM -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-[var(--gold-brown)]/50 transition-colors group cursor-hover">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--magenta-main)]/20 flex items-center justify-center border border-[var(--magenta-main)]/30 text-[var(--magenta-main)] font-bold shadow-[0_0_10px_rgba(255,183,197,0.2)]">OM</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">OmarB</h4>
+                            <p class="text-[10px] text-gray-400 font-mono">146767641</p>
+                        </div>
+                    </div>
+                    <a href="https://xat.me/OmarB" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-[var(--gold-brown)]/20 text-[var(--gold-shine)] text-[10px] font-bold border border-[var(--gold-brown)]/30 hover:bg-[var(--gold-brown)] hover:text-white transition-colors cursor-hover">XAT.ME</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGICA ESTRELLAS ---
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const starCount = 80;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 2 + 1;
+                const duration = Math.random() * 3 + 2;
+                const delay = Math.random() * 5;
+                const maxOpacity = Math.random() * 0.7 + 0.3;
+
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--delay', `${delay}s`);
+                star.style.setProperty('--max-opacity', maxOpacity);
+
+                if (Math.random() > 0.8) {
+                    star.style.backgroundColor = 'var(--gold-shine)';
+                    star.style.boxShadow = '0 0 6px var(--gold-shine)';
+                }
+                container.appendChild(star);
+            }
+        }
+        createStars();
+
+        // --- LOGICA PARTÍCULAS DORADAS ---
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.classList.add('cursor-particle');
+            document.body.appendChild(particle);
+
+            const size = Math.random() * 3 + 2; 
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            const colors = ['var(--gold-brown)', 'var(--gold-shine)', 'var(--magenta-main)'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.backgroundColor = color;
+            particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
+
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+
+            const destinationX = (Math.random() - 0.5) * 50;
+            const destinationY = (Math.random() - 0.5) * 50;
+
+            particle.style.setProperty('--tx', `${destinationX}px`);
+            particle.style.setProperty('--ty', `${destinationY}px`);
+
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
+        }
+
+        // --- FUNCION TRIGGER LIKE (MANITAS ARRIBA) ---
+        function triggerLike(event, btn) {
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top;
+
+            for(let i=0; i<3; i++) {
+                const el = document.createElement('div');
+                el.classList.add('like-float');
+                el.innerHTML = '<i class="fa-solid fa-thumbs-up"></i>';
+                
+                const randomX = (Math.random() - 0.5) * 40;
+                
+                el.style.left = `${centerX + randomX}px`;
+                el.style.top = `${centerY}px`;
+                el.style.animationDelay = `${i * 0.1}s`; 
+                
+                document.body.appendChild(el);
+                
+                el.addEventListener('animationend', () => el.remove());
+            }
+
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="text-[var(--gold-shine)]">Liked!</span>';
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+            }, 1000);
+        }
+
+        // --- MOUSE TRACKING ---
+        const cursor = document.getElementById('cursor-glow');
+        let mouseX = window.innerWidth / 2; 
+        let mouseY = window.innerHeight / 2;
+        let cursorX = window.innerWidth / 2; 
+        let cursorY = window.innerHeight / 2;
+        let lastParticleTime = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+
+            const now = Date.now();
+            if (now - lastParticleTime > 30) {
+                createParticle(mouseX, mouseY);
+                lastParticleTime = now;
+            }
+        });
+
+        function animateCursor() {
+            const dx = mouseX - cursorX;
+            const dy = mouseY - cursorY;
+            cursorX += dx * 0.15;
+            cursorY += dy * 0.15;
+            
+            if(window.matchMedia("(hover: hover)").matches) {
+                cursor.style.left = cursorX + 'px';
+                cursor.style.top = cursorY + 'px';
+            }
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // --- MODAL DE AMIGOS ---
+        function openFriendsModal() {
+            const modal = document.getElementById('friends-modal');
+            const card = modal.querySelector('.glass-card');
+            modal.classList.remove('opacity-0', 'invisible');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }
+
+        function closeFriendsModal() {
+            const modal = document.getElementById('friends-modal');
+            const card = modal.querySelector('.glass-card');
+            modal.classList.add('opacity-0', 'invisible');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+        }
+
+        // --- MUSIC PLAYER ---
+        const playlist = [
+            {
+                title: "Me Quedo Contigo",
+                artist: "Benedetta Caretta",
+                cover: "https://xatimg.com/image/bpGSlCIkp6sv.jpg", 
+                src: "track1.mp3" 
+            }
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        
+        const audio = document.getElementById('audio-player');
+        const playIcon = document.getElementById('play-icon');
+        const albumArt = document.getElementById('album-art');
+        const visualizer = document.getElementById('visualizer');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const volumeSlider = document.getElementById('volume-slider');
+        const mainContent = document.getElementById('main-content');
+        const startScreen = document.getElementById('start-screen');
+
+        function enterSite() {
+            startScreen.style.opacity = '0';
+            startScreen.style.pointerEvents = 'none';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainContent.classList.remove('opacity-0', 'scale-95', 'filter', 'blur-sm');
+            }, 600);
+            playSong();
+        }
+
+        function loadSong(song) {
+            document.getElementById('song-title').innerText = song.title;
+            document.getElementById('artist-name').innerText = song.artist;
+            albumArt.src = song.cover;
+            audio.src = song.src;
+            albumArt.onerror = function() {
+                this.src = 'https://placehold.co/300x300/222/FFF?text=Music'; 
+            };
+        }
+
+        loadSong(playlist[currentSongIndex]);
+
+        function togglePlay() {
+            if (isPlaying) { pauseSong(); } else { playSong(); }
+        }
+
+        function playSong() {
+            isPlaying = true;
+            var playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                    albumArt.style.animationPlayState = 'running';
+                    visualizer.classList.remove('paused');
+                }).catch(error => { isPlaying = false; });
+            }
+        }
+
+        function pauseSong() {
+            isPlaying = false;
+            audio.pause();
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            albumArt.style.animationPlayState = 'paused';
+            visualizer.classList.add('paused');
+        }
+
+        function nextSong() {
+            currentSongIndex++;
+            if (currentSongIndex > playlist.length - 1) currentSongIndex = 0;
+            loadSong(playlist[currentSongIndex]);
+            playSong();
+        }
+
+        function prevSong() {
+            currentSongIndex--;
+            if (currentSongIndex < 0) currentSongIndex = playlist.length - 1;
+            loadSong(playlist[currentSongIndex]);
+            if(isPlaying) playSong();
+        }
+
+        function updateProgress() {
+            const { duration, currentTime } = audio;
+            if(isNaN(duration)) return;
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            document.getElementById('current-time').innerText = formatTime(currentTime);
+            document.getElementById('duration').innerText = formatTime(duration);
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' + sec : sec}`;
+        }
+
+        progressContainer.addEventListener('click', (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
+        // --- GALERIA CARROUSEL SCROLL CON MOUSE ---
+        const gallerySlider = document.getElementById('gallery-slider');
+        if (gallerySlider) {
+            gallerySlider.addEventListener('wheel', (evt) => {
+                evt.preventDefault();
+                gallerySlider.scrollBy({
+                    left: evt.deltaY > 0 ? gallerySlider.offsetWidth : -gallerySlider.offsetWidth,
+                    behavior: 'smooth'
+                });
+            }, { passive: false });
+        }
+
+        // --- FETCH ONLINE STATUS ---
+        async function fetchOnlineStatus() {
+            try {
+                const response = await fetch('https://illuxat.com/api/online/Yours');
+                const text = await response.text();
+                const statusText = document.getElementById('status-text');
+                const statusIndicator = document.getElementById('status-indicator');
+                
+                if (text.trim() === "Online") {
+                    statusText.innerText = "EN LÍNEA";
+                    statusIndicator.className = "w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse";
+                } else {
+                    statusText.innerText = "AUSENTE";
+                    statusIndicator.className = "w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse";
+                }
+            } catch (error) {
+                console.error("Error fetching online status:", error);
+            }
+        }
+        
+        // Ejecutar inmediatamente al cargar la página
+        fetchOnlineStatus();
+    </script>
+</body>
+</html>
