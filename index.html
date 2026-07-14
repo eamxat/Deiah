@@ -480,6 +480,11 @@
         </section>
     </main>
 
+    <!-- FIRMA EAM96 -->
+    <div class="w-full text-center pb-6 mt-auto relative z-10 pointer-events-none">
+        <p class="text-[9px] text-white/30 font-mono tracking-[0.2em] uppercase select-none">©2026 Eam96 Xatspace Design</p>
+    </div>
+
     <!-- MODAL FRIENDS (Reutilizando diseño Glassmorphism) -->
     <div id="friends-modal" class="fixed inset-0 z-[999999] flex items-center justify-center opacity-0 invisible transition-all duration-300 p-4">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeFriendsModal()"></div>
@@ -846,6 +851,24 @@
         
         // Ejecutar inmediatamente al cargar la página
         fetchOnlineStatus();
+
+        // --- PROTECCIÓN DE CÓDIGO (Anti-F12, Clic Derecho, Atajos) ---
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
     </script>
 </body>
 </html>
