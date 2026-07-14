@@ -812,7 +812,27 @@
                 const statusText = document.getElementById('status-text');
                 const statusIndicator = document.getElementById('status-indicator');
                 
-                if (text.trim() === "Online") {
+                let isOnline = false;
+                
+                try {
+                    const data = JSON.parse(text);
+                    // Validamos la estructura exacta que arroja la API: { data: { status: "Online" } }
+                    if (data && data.data && data.data.status === "Online") {
+                        isOnline = true;
+                    } else if (data && data.status === "Online") { // Respaldo por si cambia la estructura
+                        isOnline = true;
+                    } else if (data === "Online") {
+                        isOnline = true;
+                    }
+                } catch (e) {
+                    // Si no es JSON, probamos texto plano
+                    const cleanText = text.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                    if (cleanText === "online" || cleanText === "1" || cleanText === "true") {
+                        isOnline = true;
+                    }
+                }
+                
+                if (isOnline) {
                     statusText.innerText = "EN LÍNEA";
                     statusIndicator.className = "w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse";
                 } else {
